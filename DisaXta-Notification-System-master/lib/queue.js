@@ -3,7 +3,6 @@ import config from "../config/config.js"
 
 export async function useQueue(channel_name, func){
     try{
-        console.log('using queue...')
     const conn = await amqp.connect(config.amqp.url)
     const channel = await conn.createChannel()
     channel.assertQueue(channel_name, {durable: false})
@@ -16,7 +15,7 @@ export async function useQueue(channel_name, func){
             }catch(ex){
                 console.log(`useQueue callback function failed - ${ex}`)
             }
-            channel.ack()
+            channel.ack(msg)
         }
     })
     }catch(err){

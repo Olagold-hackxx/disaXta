@@ -1,7 +1,10 @@
 import nodemailer from "nodemailer"
-import config from "../config/config"
+import config from "../config/config.js"
 import ejs from "ejs"
 import path from "path"
+
+const __dirname = process.cwd()
+
 
 export const mailTypes = {
     custom: "custom",
@@ -13,7 +16,7 @@ export const mailTypes = {
 }
 
 const getPath = fileName =>{
-    return path.resolve(__dirname, `../templates/${fileName}.ejs`)
+    return path.join(__dirname, `/templates/${fileName}.ejs`)
 }
 
 class Mailer{
@@ -21,11 +24,12 @@ class Mailer{
         this.transporter = nodemailer.createTransport({
             ...config.mail
         })
-        this.from_address = config.mail.auth.user
+        // this.from_address = config.mail.auth.user
+        this.from_address = "tester@gmail.com"
     }
 
     loadTemplate(path, data){
-        return ejs.render(path, data)
+        return ejs.renderFile(path, data)
     }
 
     sendMail(email, html){

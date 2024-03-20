@@ -1,5 +1,5 @@
-import mailDataValidator from "../validation/mail"
-import mailer from "./mailer"
+import mailDataValidator from "../validation/mail.js"
+import mailer from "./mailer.js"
 
 class Controller{
 
