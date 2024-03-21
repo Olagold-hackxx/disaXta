@@ -1,5 +1,5 @@
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
-from rest_framework import mixins, filters
+from rest_framework import mixins, filters, serializers
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
@@ -11,16 +11,18 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.conf import settings
 from app.serializers import (
     UserSerializer,
-    #UserCreateSerializer,
-    #UserLoginSerializer,
-    #UserPasswordChangeSerializer,
-    #PasswordResetSerializer,
+    UserCreateSerializer,
+    UserLoginSerializer,
+    UserPasswordChangeSerializer,
+    PasswordResetSerializer,
     PostSerializer,
     CommentSerializer,
     FollowerSerializer,
-    FollowingSerializer,
+    SubCommentSerializer,
 )
-from app.models import User, CustomToken, Follower, Post, Comment, Following
+from django.core.exceptions import ValidationError
+
+from app.models import User, CustomToken, Follower, Post, Comment
 from app.serializers import UserSerializer
 from app.tasks import send_activation_email, send_reset_password_email
 
@@ -109,32 +111,27 @@ class UserViewSet(
             # send_reset_password_email(user.pk)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(["post"], detail=False)
-    def reset_password_confirm(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
 
 class PostViewset(ModelViewSet):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
-    serializer_class = PostSerializer
     pagination_class = None
     queryset = Post.objects.all()
+    serializer_class = PostSerializer
     filter_backends = [
         DjangoFilterBackend,
         filters.SearchFilter,
         filters.OrderingFilter,
     ]
-    filterset_fields = ["id", "name"]
+    filterset_fields = [
+        "id",
+    ]
     search_fields = filterset_fields
 
-    #def get_queryset(self):
+    # def get_queryset(self):
     #    return Post.objects.filter(user=self.request.user)
 
-    #def get_serializer_class(self):
+    # def get_serializer_class(self):
     #    return PostSerializer
 
 
@@ -149,14 +146,33 @@ class CommentViewset(ModelViewSet):
         filters.SearchFilter,
         filters.OrderingFilter,
     ]
-    filterset_fields = ["id", "name"]
+    filterset_fields = [
+        "id",
+    ]
     search_fields = filterset_fields
 
-    #def get_queryset(self):
+    # def get_queryset(self):
     #    return Comment.objects.filter(user=self.request.user)
 
-    #def get_serializer_class(self):
+    # def get_serializer_class(self):
     #    return CommentSerializer
+
+
+class SubCommentViewset(ModelViewSet):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = SubCommentSerializer
+    pagination_class = None
+    queryset = Comment.objects.all()
+    filter_backends = [
+        DjangoFilterBackend,
+        filters.SearchFilter,
+        filters.OrderingFilter,
+    ]
+    filterset_fields = [
+        "id",
+    ]
+    search_fields = filterset_fields
 
 
 class FollowerViewset(ModelViewSet):
@@ -170,35 +186,46 @@ class FollowerViewset(ModelViewSet):
         filters.SearchFilter,
         filters.OrderingFilter,
     ]
-    filterset_fields = ["id", "name"]
+    filterset_fields = [
+        "id",
+    ]
     search_fields = filterset_fields
 
-    #def get_queryset(self):
-    #    return Follower.objects.filter(user=self.request.user)
-
-    #def get_serializer_class(self):
-    #    return FollowerSerializer
+    def get_queryset(self):
+        user = self.request.user
+        return user.followers.all()
 
 
 class FollowingViewset(ModelViewSet):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
-    serializer_class = FollowingSerializer
-    pagination_class = None
-    queryset = Following.objects.all()
-    filter_backends = [
-        DjangoFilterBackend,
-        filters.SearchFilter,
-        filters.OrderingFilter,
-    ]
-    filterset_fields = ["id", "name"]
-    search_fields = filterset_fields
+    serializer_class = FollowerSerializer
 
-    #def get_queryset(self):
-    #    return Follower.objects.filter(user=self.request.user)
+    def perform_create(self, serializer):
+        # Override the default create method to handle follow logic
+        following_id = self.request.data.get("user")
+        following = User.objects.get(pk=following_id)
+        # import pdb; pdb.set_trace()
 
-    #def get_serializer_class(self):
-    #    return PostSerializer
+        # Check if the user is already following
+        if following.followings.filter(user=self.request.user.pk).exists():
+            raise serializers.ValidationError("You are already following this user")
+
+        following = serializer.save(user=following)
+        following.followers.add(self.request.user)
+
+    def destroy(self, request, pk=None, *args, **kwargs):
+        # Handle unfollow logic
+        try:
+            follower = Follower.objects.get(pk=pk, user=request.user)
+            follower.delete()
+            return Response({"message": "Unfollowed successfully"}, status=200)
+        except Follower.DoesNotExist:
+            return Response({"error": "Follower object not found"}, status=404)
+
+    def get_queryset(self):
+        user = self.request.user
+        return user.user_followed
 
 
 class LikeViewset(ModelViewSet):
@@ -212,7 +239,9 @@ class LikeViewset(ModelViewSet):
         filters.SearchFilter,
         filters.OrderingFilter,
     ]
-    filterset_fields = ["id", "name"]
+    filterset_fields = [
+        "id",
+    ]
     search_fields = filterset_fields
 
 
@@ -227,12 +256,13 @@ class SaveViewset(ModelViewSet):
         filters.SearchFilter,
         filters.OrderingFilter,
     ]
-    filterset_fields = ["id", "name"]
+    filterset_fields = [
+        "id",
+    ]
     search_fields = filterset_fields
 
-    #def get_queryset(self):
+    # def get_queryset(self):
     #    return Post.objects.filter(user=self.request.user)
 
-    #def get_serializer_class(self):
+    # def get_serializer_class(self):
     #    return PostSerializer
-

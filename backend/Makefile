@@ -30,17 +30,20 @@ test:
 ssh:
 	docker exec -it $(LOCAL_WEB_CONTAINER_NAME) /bin/sh
 
+superuser:
+	docker exec -it $(LOCAL_WEB_CONTAINER_NAME) python manage.py createsuperuser
+
 requiremelnts:
 	docker exec -it $(LOCAL_WEB_CONTAINER_NAME) pip install -r requirements.txt
 
 migrations:
-	docker exec -it $(LOCAL_WEB_CONTAINER_NAME) python manage.py makemigrations $(app)
+	docker exec -it $(LOCAL_WEB_CONTAINER_NAME) python manage.py makemigrations
 
 migrate:
 	docker exec -it $(LOCAL_WEB_CONTAINER_NAME) python manage.py migrate
 
 db-shell:
-	docker exec -it $(LOCAL_DB_CONTAINER_NAME) mysql -u disaXta
+	docker exec -it $(LOCAL_DB_CONTAINER_NAME) mysql -u disaXta -p
 
 db-ssh:
 	docker exec -it $(LOCAL_DB_CONTAINER_NAME) /bin/sh
@@ -82,7 +85,3 @@ _install_pip_tools:
 
 install_req: _install_pip_tools  ## install python requirements
 	pip install -r requirements.txt
-
-apply-fixtures-native:
-	python manage.py migrate
-	python manage.py loaddata fixtures/accounts_user.yaml
