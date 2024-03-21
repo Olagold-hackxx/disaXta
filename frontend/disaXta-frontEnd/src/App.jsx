@@ -9,6 +9,8 @@ import Profile from "./components/Profile";
 import Comment from "./pages/Comment";
 import Createpost from "./components/Createpost";
 import Createcomment from "./components/Createcomment";
+import Waverx from "./pages/Waverx";
+import Signuppage from "./pages/Signuppage";
 
 function App() {
   return (
@@ -17,7 +19,7 @@ function App() {
         <Routes>
           <Route path="/" element={<SharedLayout />}>
             <Route index element={<Mainfeed />} />
-            <Route path="/community" element={<Community/>} />
+            <Route path="/community" element={<Community />} />
             <Route path="/education" element={<Education />} />
             <Route path="/happeningnow" element={<Happeningnow />} />
             <Route path="/waverx-tweet" element={<WaverX />} />
@@ -26,6 +28,15 @@ function App() {
             <Route path="/createpost" element={<Createpost />} />
             <Route path="/:postId/comment" element={<Createcomment />} />
           </Route>
+
+          <Route path="/:userId/waverx" element={<Waverx />} />
+          <Route path="/signup" element={<Signuppage />} />
+          {/* <Route
+            path="/emailconfirmation/:userToken"
+            element={<Emailconfirmation />}
+          /> */}
+          {/* <Route path="/login" element={<Loginpage />} /> */}
+          {/* <Route path="/forgotpassword" element={<Forgotpasswordpage />} /> */}
         </Routes>
       </BrowserRouter>
     </div>
