@@ -8,6 +8,7 @@ import WaverX from "./components/WaverX";
 import Profile from "./components/Profile";
 import Comment from "./pages/Comment";
 import Createpost from "./components/Createpost";
+import Createcomment from "./components/Createcomment";
 
 function App() {
   return (
@@ -23,7 +24,7 @@ function App() {
             <Route path="/profile" element={<Profile />} />
             <Route path="/:postId/comments" element={<Comment />} />
             <Route path="/createpost" element={<Createpost />} />
-            {/* <Route path="/:postId/comment" element={<Createcomment />} /> */}
+            <Route path="/:postId/comment" element={<Createcomment />} />
           </Route>
         </Routes>
       </BrowserRouter>
