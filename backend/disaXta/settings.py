@@ -42,12 +42,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "rest_framework",
     "drf_spectacular",
     "django_filters",
-    "debug_toolbar",
     "django_extensions",
-    'app'
+    "app"
 ]
 
 MIDDLEWARE = [
@@ -79,6 +77,8 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'disaXta.wsgi.application'
+
+AUTH_USER_MODEL = 'app.User'
 
 SIMPLE_JWT = {
     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.SlidingToken",),
@@ -136,9 +136,16 @@ REST_FRAMEWORK = {
     ),
 }
 
+SPECTACULAR_SETTINGS = {
+    "TITLE": "DisaXta API Documentation",
+    "DESCRIPTION": "API documentation for DisaXta",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+}
+
 UNFOLD = {
-    "SITE_TITLE": None,
-    "SITE_HEADER": None,
+    "SITE_TITLE": "DisaXta",
+    "SITE_HEADER": "DisaXta",
 }
 
 # Internationalization

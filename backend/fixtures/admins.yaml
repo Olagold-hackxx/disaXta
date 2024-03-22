@@ -1,0 +1,29 @@
+ model: app.user
+  pk: 2
+  fields:
+    first_name: Abdul
+    last_name: Admin
+    id: 39852424-b6db-4ac3-8538-b05f92ee9bf7
+    username: abdul
+    email: abdul@disaXta.dev
+    password: pbkdf2_sha256$720000$PHwuxZ7zBd93GmsxrokMZ2$lwrTwzhoay3dCDhW1IxLHkDxRhZgyBrCfuNDCYADIUI=
+- model: app.user
+  pk: 3
+  fields:
+    first_name: Farouq
+    last_name: Admin
+    id: a6f55fe1-a844-47e7-affa-af227c8c56e7
+    email: farouq@disaXta.dev
+    username: farouq
+    password: pbkdf2_sha256$720000$PHwuxZ7zBd93GmsxrokMZ2$lwrTwzhoay3dCDhW1IxLHkDxRhZgyBrCfuNDCYADIUI=
+
+- model: app.user
+  pk: 4
+  fields:
+    first_name: Taiwo
+    last_name: Admin
+    id: 56ff675f-a893-35e7-aghf-af456c8d56e7
+    email: taiwo@disaXta.dev
+    username: taiwo
+    password: pbkdf2_sha256$720000$PHwuxZ7zBd93GmsxrokMZ2$lwrTwzhoay3dCDhW1IxLHkDxRhZgyBrCfuNDCYADIUI=
+  
