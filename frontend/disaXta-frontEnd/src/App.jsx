@@ -11,6 +11,8 @@ import Createpost from "./components/Createpost";
 import Createcomment from "./components/Createcomment";
 import Waverx from "./pages/Waverx";
 import Signuppage from "./pages/Signuppage";
+import Emailconfirmation from "./pages/Emailconfirmation";
+import Loginpage from "./pages/LoginPage";
 
 function App() {
   return (
@@ -31,11 +33,11 @@ function App() {
 
           <Route path="/:userId/waverx" element={<Waverx />} />
           <Route path="/signup" element={<Signuppage />} />
-          {/* <Route
+          <Route
             path="/emailconfirmation/:userToken"
             element={<Emailconfirmation />}
-          /> */}
-          {/* <Route path="/login" element={<Loginpage />} /> */}
+          />
+          <Route path="/login" element={<Loginpage />} />
           {/* <Route path="/forgotpassword" element={<Forgotpasswordpage />} /> */}
         </Routes>
       </BrowserRouter>

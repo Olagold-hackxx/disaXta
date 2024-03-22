@@ -21,7 +21,7 @@ const data = null
 
   
   return (
-    <div className="text-2xl text-center pt-1 md:pt-5 ">
+    <div className="text-2xl text-center pt-1 md:pt-5  ">
       <h2 className="border-b-2 pb-1 md:pb-3 text-lg md:text-xl font-semibold flex flex-row items-center  ">
         <BsPerson className="ml-2 mr-1 " />
         Profile
@@ -57,7 +57,7 @@ const data = null
         <p className=" font-normal text-left ml-2 text-base my-2 ">
           {data?.user_details?.bio}
         </p>
-        <div className="font-normal text-left text-gray-600 ml-2 text-base my-4 flex flex-row items-center gap-5   ">
+        <div className="font-normal text-left white  ml-2 text-base my-4 flex flex-row items-center gap-5   ">
           <p className="flex flex-row items-center gap-1 ">
             <FiMapPin size={17} />
             Nigeria
@@ -70,7 +70,7 @@ const data = null
       </div>
       {/* Post Swittcher */}
       <div>
-        <div className="text-gray-400 flex flex-row justify-center text-base gap-8 border-0 border-b-2 ">
+        <div className="text-white flex flex-row justify-center text-base gap-8 border-0 border-b-2 ">
           <h2
             className={`cursor-pointer ${
               swittcher === false ? "text-black border-b-2 border-black" : null
