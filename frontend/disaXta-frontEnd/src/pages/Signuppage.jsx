@@ -1,37 +1,40 @@
 import { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { Link } from "react-router-dom";
-import Signupform from "../components/Signupform";
+
 import { AiOutlineClose } from "react-icons/ai";
 
 
+const oauthUrl = import.meta.env.VITE_APP_OAUTH_URL;
+
 const Signuppage = () => {
+
 
 
   const [isFormOpen, setIsFormOpen] = useState(false);
 
   return (
     <>
-      <div className="grid md:grid-cols-[3fr_4fr] grid-cols-[1fr]  items-center ">
-        <div className="bg-green grid place-content-center h-[80vh] md:h-[100vh]   ">
+      <div className="grid text-white md:grid-cols-[3fr_4fr] grid-cols-[1fr] bg-gradient-to-r from-slate-900 to-slate-700  items-center ">
+        <div className="bg-gradient-to-r from-fuchsia-500 to-purple-600 grid place-content-center h-[80vh] md:h-[100vh]   ">
           <img src="../../logolargewhite.png" alt="" />
         </div>
         <div className="flex flex-col text-center items-center gap-4 -mt-[550px] md:mt-0 bg-opacity-40 backdrop-filter backdrop-blur-lg bg-white border md:border-0 border-gray-300  md:bg-inherit w-[90%] md:w-[100%] justify-self-center rounded-xl p-3 ">
           {isFormOpen === false ? (
             <>
-              <h1 className="text-2xl font-semibold mb-3 mt-8 md:mt-0 ">
+              <h1 className="text-2xl text-white font-semibold mb-3 mt-8 md:mt-0 ">
                 Sign up
               </h1>
               <a href={`${oauthUrl}/api/v1/auth/new-google`}>
                 <div
-                  className="flex flex-row mb-3 items-center md:text-xl text-base  font-semibold outline outline-1 bg-white text-black p-4 rounded-full "
+                  className="flex flex-row mb-3 items-center md:text-xl text-base  font-semibold outline outline-1 bg-gradient-to-r from-fuchsia-500 to-purple-600 text-black p-4 rounded-full "
                   // onClick={() => googleSigninFunction()}
                 >
-                  <FcGoogle className="mr-2 " size={32} /> Continue in with
+                  <FcGoogle className="mr-2  " size={32} /> Continue in with
                   Google
                 </div>
               </a>
-              <div className="flex flex-row gap-3 w-[100%] justify-center bg-white py-3 ">
+              <div className="flex flex-row gap-3 items-center rounded-3xl pr-9 justify-center bg-gradient-to-r from-fuchsia-500 to-purple-600 py-3 ">
                 <a href={`${oauthUrl}/api/v1/auth/github`}>
                   <img className="w-[35px]" src="../../2.png" alt="" />
                 </a>
