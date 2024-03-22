@@ -3,15 +3,13 @@ import { FcGoogle } from "react-icons/fc";
 import { Link } from "react-router-dom";
 
 import { AiOutlineClose } from "react-icons/ai";
+import Signupform from "../components/Signupform";
 
 
 const oauthUrl = import.meta.env.VITE_APP_OAUTH_URL;
 
 const Signuppage = () => {
-
-
-
-  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isFormOpen, setIsFormOpen] = useState(false)
 
   return (
     <>
@@ -27,14 +25,14 @@ const Signuppage = () => {
               </h1>
               <a href={`${oauthUrl}/api/v1/auth/new-google`}>
                 <div
-                  className="flex flex-row mb-3 items-center md:text-xl text-base  font-semibold outline outline-1 bg-gradient-to-r from-fuchsia-500 to-purple-600 text-black p-4 rounded-full "
+                  className="flex flex-row mb-3 items-center md:text-xl text-base  font-semibold outline outline-1 bg-gradient-to-r from-fuchsia-500 to-purple-600 hover:bg-gradient-to-r hover:from-fuchsia-600 hover:to-purple-700 text-black p-4 rounded-full "
                   // onClick={() => googleSigninFunction()}
                 >
                   <FcGoogle className="mr-2  " size={32} /> Continue in with
                   Google
                 </div>
               </a>
-              <div className="flex flex-row gap-3 items-center rounded-3xl pr-9 justify-center bg-gradient-to-r from-fuchsia-500 to-purple-600 py-3 ">
+              <div className="flex flex-row gap-3 items-center rounded-3xl pr-9 justify-center bg-gradient-to-r from-fuchsia-500 to-purple-600 hover:bg-gradient-to-r hover:from-fuchsia-600 hover:to-purple-700 py-3 ">
                 <a href={`${oauthUrl}/api/v1/auth/github`}>
                   <img className="w-[35px]" src="../../2.png" alt="" />
                 </a>
@@ -50,7 +48,7 @@ const Signuppage = () => {
               </div>
               <p>or</p>
               <button
-                className="md:text-xl text-base font-semibold bg-green text-white p-4 rounded-full w-[50%] "
+                className="md:text-xl text-base font-semibold bg-white hover:bg-gray-200 text-black  p-4 rounded-full w-[50%] "
                 onClick={() => setIsFormOpen(true)}
               >
                 Sign Up
@@ -63,7 +61,7 @@ const Signuppage = () => {
               </p>
             </>
           ) : (
-            <div className="bg-slate-200 max-w-md mx-auto p-3 md:p-6 rounded-md shadow-md flex flex-col ">
+            <div className="bg-gradient-to-r from-slate-800 to-slate-850 max-w-md mx-auto p-3 md:p-6 rounded-md shadow-md flex flex-col ">
               <AiOutlineClose
                 className="mb-3"
                 size={28}

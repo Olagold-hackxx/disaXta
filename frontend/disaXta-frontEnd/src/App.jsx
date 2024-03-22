@@ -13,6 +13,7 @@ import Waverx from "./pages/Waverx";
 import Signuppage from "./pages/Signuppage";
 import Emailconfirmation from "./pages/Emailconfirmation";
 import Loginpage from "./pages/LoginPage";
+import Forgotpasswordpage from "./pages/Forgotpasswordpage";
 
 function App() {
   return (
@@ -38,7 +39,7 @@ function App() {
             element={<Emailconfirmation />}
           />
           <Route path="/login" element={<Loginpage />} />
-          {/* <Route path="/forgotpassword" element={<Forgotpasswordpage />} /> */}
+          <Route path="/forgotpassword" element={<Forgotpasswordpage />} />
         </Routes>
       </BrowserRouter>
     </div>
