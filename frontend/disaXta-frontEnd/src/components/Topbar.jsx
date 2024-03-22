@@ -10,7 +10,7 @@ const Topbar = () => {
 
   return (
     // <Padder >  flex flex-row
-    <div className=' grid grid-cols-[1fr_2fr_1fr] items-center outline outline-1 outline-graylight px-3 py-2 md:px-20 md:py-4 '>
+    <div className=' grid grid-cols-[1fr_2fr_1fr]  items-center outline outline-1 outline-graylight px-3 py-2 md:px-20 md:py-4 '>
         {/* Page title */}
         <HiOutlineMenuAlt1 size={35} onClick={() => setIsOpen(true)} />
         {

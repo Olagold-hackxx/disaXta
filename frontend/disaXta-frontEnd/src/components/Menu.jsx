@@ -13,19 +13,19 @@ const Menu = () => {
           to={"/"}
           className={({ isActive }) =>
             isActive
-              ? "flex items-center rounded-full p-2  hover:bg-graydark "
-              : "flex items-center rounded-full p-2  hover:bg-graydark "
+              ? "flex items-center rounded-full p-2  hover:bg-gradient-to-r from-fuchsia-500 to-purple-600 "
+              : "flex items-center rounded-full p-2  hover:bg-gradient-to-r from-fuchsia-500 to-purple-600 "
           }
         >
-          <BsFillHouseFill className="mr-1" color="rgb(0 128 128 / 1)" />
+          <BsFillHouseFill className="mr-1" color="" />
           Home
         </NavLink>
         <NavLink
           to={"/community"}
           className={({ isActive }) =>
             isActive
-              ? "flex items-center rounded-full p-2  hover:bg-graydark "
-              : "flex items-center rounded-full p-2  hover:bg-graydark "
+              ? "flex items-center rounded-full p-2  hover:bg-gradient-to-r from-fuchsia-500 to-purple-600 "
+              : "flex items-center rounded-full p-2  hover:bg-gradient-to-r from-fuchsia-500 to-purple-600 "
           }
         >
           <BsPeople className="mr-1" />
@@ -35,8 +35,8 @@ const Menu = () => {
         //   to={`/${userId}/waverx`}
           className={({ isActive }) =>
             isActive
-              ? "flex items-center rounded-full p-2  hover:bg-graydark "
-              : "flex items-center rounded-full p-2  hover:bg-graydark "
+              ? "flex items-center rounded-full p-2  hover:bg-gradient-to-r from-fuchsia-500 to-purple-600 "
+              : "flex items-center rounded-full p-2  hover:bg-gradient-to-r from-fuchsia-500 to-purple-600 "
           }
         >
           <BsRobot className="mr-1" />
@@ -46,8 +46,8 @@ const Menu = () => {
           to={"/profile"}
           className={({ isActive }) =>
             isActive
-              ? "flex items-center rounded-full p-2  hover:bg-graydark "
-              : "flex items-center rounded-full p-2  hover:bg-graydark "
+              ? "flex items-center rounded-full p-2  hover:bg-gradient-to-r from-fuchsia-500 to-purple-600 "
+              : "flex items-center rounded-full p-2  hover:bg-gradient-to-r from-fuchsia-500 to-purple-600 "
           }
         >
           <BsPerson className="mr-1" />
@@ -56,8 +56,8 @@ const Menu = () => {
         <NavLink
           className={({ isActive }) =>
             isActive
-              ? "flex items-center rounded-full p-2  hover:bg-graydark "
-              : "flex items-center rounded-full p-2  hover:bg-graydark "
+              ? "flex items-center rounded-full p-2  hover:bg-gradient-to-r from-fuchsia-500 to-purple-600 "
+              : "flex items-center rounded-full p-2  hover:bg-gradient-to-r from-fuchsia-500 to-purple-600 "
           }
         >
           <BsBookmark className="mr-1" />
@@ -67,7 +67,7 @@ const Menu = () => {
       {/* Post btn */}
       <Link
         to={"./createpost"}
-        className="text-xl text-center font-semibold bg-green text-white p-4 rounded-full"
+        className="text-xl text-center font-semibold bg-gradient-to-r from-fuchsia-500 to-purple-600 hover:bg-gradient-to-r hover:from-fuchsia-600 hover:to-purple-700 text-white p-4 rounded-full"
       >
         Post
       </Link>
