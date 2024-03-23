@@ -10,10 +10,10 @@ services:
     env_file:
       - ./.env
     environment:
-      - MYSQL_HOST=disaXta.db
+      - MYSQL_HOST=backend.db
     ports:
       - 8000:8000
-    container_name: disaXta.web
+    container_name: backend.web
     depends_on:
       - db
 
@@ -22,11 +22,12 @@ services:
     env_file:
       - ./.env
     ports:
-      - 3306:3306
-    container_name: disaXta.db
+      - 3307:3306
+    container_name: backend.db
     volumes:
       - mysql_data:/var/lib/mysql
   
 volumes:
   mysql_data:
+    name: "disaXta-data"
 

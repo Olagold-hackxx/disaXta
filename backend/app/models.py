@@ -55,15 +55,8 @@ class User(AbstractUser):
     def __str__(self):
         return self.username
 
-    def serialize(self):
-        # Method to serialize user data for use in API responses
-        return {
-            "id": self.id,
-            "username": self.username,
-            "profile_pic": self.profile_pic.url,
-            "first_name": self.first_name,
-            "last_name": self.last_name,
-        }
+    class Meta:
+        db_table = 'user'
 
 
 # Post model for user-generated posts
@@ -81,7 +74,6 @@ class Post(TimeStampedModel):
         choices=[
             ("community", "Community"),
             ("education", "Education"),
-            ("reports", "Reports"),
         ],
         default="community",
     )
@@ -119,6 +111,20 @@ class Comment(TimeStampedModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="commenters")
     image = models.ImageField(upload_to="comment/", blank=True, null=True)
     content = models.TextField(max_length=90)
+    likers = models.ManyToManyField(User, related_name="liked_comments", blank=True)
+    savers = models.ManyToManyField(User, related_name="saved_comments", blank=True)
+    
+    def like_comment(self, user):
+        self.likers.add(user)
+
+    def unlike_comment(self, user):
+        self.likers.remove(user)
+
+    def save_comment(self, user):
+        self.savers.add(user)
+
+    def unsave_comment(self, user):
+        self.savers.remove(user)
 
 
 class Follower(TimeStampedModel):
@@ -136,7 +142,7 @@ class Follower(TimeStampedModel):
 
 
 
-class CustomToken(TimeStampedModel):
+class Token(TimeStampedModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="token")
     is_valid = models.BooleanField(default=False)
     token = models.CharField(max_length=2048)

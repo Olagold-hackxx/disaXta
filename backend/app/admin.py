@@ -4,8 +4,7 @@ from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import Group
 from unfold.admin import ModelAdmin
-
-from app.models import User, CustomToken, Post, Follower, Comment
+from app.models import User, Post, Follower, Comment, Token
 
 
 @admin.register(User)
@@ -78,8 +77,8 @@ class UserAdmin(ModelAdmin):
     ordering = ("email",)
 
 
-@admin.register(CustomToken)
-class CustomTokenAdmin(ModelAdmin):
+@admin.register(Token)
+class TokenAdmin(ModelAdmin):
     list_filter = ("user",)
     search_fields = ("user",)
 

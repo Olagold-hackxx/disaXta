@@ -1,75 +1,97 @@
-import logging
+import pika
+import os
+import json
 
-#from celery import shared_task
+import logging
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
-from app.models import CustomToken as Token
+from djoser.compat import get_user_email
+from rest_framework.authtoken.models import Token
+from urllib.parse import urljoin
 
-# from celery.utils.log import get_task_logger
-
-from app.models import User, CustomToken
-#from utils.celery import celery_email_task_kwargs
-
-# from urllib.parse import urljoin
+from app.models import User
 
 from .utils import Util
 
 logger = logging.getLogger(__name__)
 
+# Connection URL
+AMQP_URL = os.environ.get("AMQP_URL")
 
-#@shared_task(**celery_email_task_kwargs)
+# Queues
+QUEUES = {
+    "custom_mail": "custom_mail",
+    "forget_password": "forget_password",
+    "onboarding": "onboarding",
+    "verification": "verification",
+}
+
+# Data types
+DATA_TYPES = {
+    "custom_mail": {"email": str, "data": {"content": str}},
+    "disaster_alert": {"email": str, "data": {"location": str, "disasterType": str}},
+    "forget_password": {"email": str, "data": {"token": str}},
+    "onboarding": {"email": str, "data": {}},
+    "verification": {"email": str, "data": {"code": str}},
+}
+
+
+def send_message(queue_name, message):
+    # Connect to RabbitMQ
+    connection = pika.BlockingConnection(pika.URLParameters(AMQP_URL))
+    channel = connection.channel()
+
+    # Declare the queue
+    channel.queue_declare(queue=queue_name, durable=True)
+
+    # Publish the message
+    channel.basic_publish(
+        exchange="",
+        routing_key=queue_name,
+        body=json.dumps(message),
+        properties=pika.BasicProperties(
+            delivery_mode=2,  # make message persistent
+        ),
+    )
+
+    print(f" [x] Sent {message} to {queue_name}")
+
+    # Close connection
+    connection.close()
+
+
 def send_activation_email(user_pk: int):
     if user := User.objects.filter(pk=user_pk).first():
-        CustomToken.objects.filter(user=user).delete()
+        Token.objects.filter(user=user).delete()
         token = Token.objects.create(user=user)
-        url = f"{settings.FRONTEND_URL}/register/verify/{token.token}/"
-        data = {
-            "template_name": "accounts/email/email_verification.html",
-            "context": {"user": user, "verification_url": url},
-            "email_subject": _("Verify your email"),
-            "to_email": user.email,
-            "from_email": settings.DEFAULT_FROM_EMAIL,
-        }
-        res = Util.send_email(data)
-        print(res)
+        send_message(
+            "verification",
+            message={
+                "email": get_user_email(user),
+                "data": {"code": token},
+            },
+        )
         logger.info(
-            f"send_activation_email: Successfully sent message to user {user.pk}"
+            f"send_activation_email: Successfully sent message to user {user.pk}"  # noqa
         )
     else:
-        logger.warning(f"send_activation_email: User: {user.pk} not found")
+        logger.warning(f"send_activation_email: User: {user_pk} not found")
 
 
-#@shared_task(**celery_email_task_kwargs)
 def send_reset_password_email(user_pk: int):
     if user := User.objects.filter(pk=user_pk).first():
-        CustomToken.objects.filter(user=user).delete()
+        Token.objects.filter(user=user).delete()
         token = Token.objects.create(user=user)
-        url = f"{settings.FRONTEND_URL}/forgot-password/{token.token}/"
-        Util.send_email(
-            data={
-                "template_name": "accounts/email/reset_password.html",
-                "context": {"user": user, "reset_password_url": url},
-                "email_subject": _("Reset Your Password"),
-                "to_email": user.email,
-                "from_email": settings.DEFAULT_FROM_EMAIL,
-            }
+        url = f"{settings.FRONTEND_URL}/forgot-password/{token.key}/"
+        send_message(
+            "forget_password",
+            message={
+                "email": get_user_email(user),
+                "data": {"token": token},
+            },
         )
         logger.info(
             f"send_reset_password_email: Successfully sent message to user {user.pk}"
         )
     else:
-        logger.warning(f"send_reset_password_email: User: {user.pk} not found")
-
-
-# @shared_task(**celery_email_task_kwargs)
-# def send_reset_username_email(user_pk: int):
-#     if user := User.objects.filter(pk=user_pk).first():
-#         to = [user.email]
-#         djoser_settings.EMAIL.username_reset(context={"user": user}).send(to)
-#         logger.info(
-#             f"send_reset_username_email: Successfully sent message to user {user.pk} {to}"
-#         )
-#     else:
-#         logger.warning(
-#             f"send_reset_username_email: User: {user_pk} not found",
-#         )
+        logger.warning(f"send_reset_password_email: User: {user_pk} not found")

@@ -54,9 +54,9 @@ class Donatee:
             self._donations[donation._id] = donation
 
             donation_json = json.dumps(donation, cls=DonationEncoder)
-            notice_payload = f'{{"type": "auction_create", "content": {donation_json}}}'
+            notice_payload = f'{{"type": "donation_create", "content": {donation_json}}}'
             logger.info(
-                f"Auction {donation._id} created for item "
+                f"Donation {donation._id} created for a disaster "
                 f"'ERC-721: {disaster_report.erc721}, id: {disaster_report.token_id}'"
             )
             return Notice(notice_payload)

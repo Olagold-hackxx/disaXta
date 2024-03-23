@@ -100,14 +100,9 @@ class Amount:
 
 class Donation:
     """
-    Auction
+    Donation
 
-    Identifies an auction of an `Item` belnging to certain user (`creator`)
-    with associated `start_date` and `end_date`.
-
-    It can receive bids as long as the `end_date` has not been reached.
-
-    It has a minimum bid amount set, as well as a `title` and `description`,
+    It has a `title` and `description`,
     and may be in three different states: `CREATED`,` STARTED` or `FINISHED`.
     """
 

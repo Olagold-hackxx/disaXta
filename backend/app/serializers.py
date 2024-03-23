@@ -1,8 +1,7 @@
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import SlidingToken
-from app.models import User, Post, Comment, CustomToken, Follower
+from app.models import User, Post, Comment, Token, Follower
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 
@@ -142,39 +141,43 @@ class PostSerializer(serializers.ModelSerializer):
         allow_null=True,
         required=False,
     )
+    comments_count = serializers.SerializerMethodField()
+    likers_count = serializers.SerializerMethodField()
+    savers_count = serializers.SerializerMethodField()
+    is_liked = serializers.SerializerMethodField()
+    is_saved = serializers.SerializerMethodField() 
+
+    def get_comments_count(self, obj):
+        return obj.comments.count()
+
+    def get_likers_count(self, obj):
+        return obj.likers.count()
+
+    def get_savers_count(self, obj):
+        return obj.savers.count()
+    
+    def get_is_liked(self, obj):
+        user = self.context.get("request").user
+        return user.liked_posts.filter(pk=obj.pk).exists()
+
+    def get_is_saved(self, obj):
+        user = self.context.get("request").user
+        return user.saved_posts.filter(pk=obj.pk).exists()
 
     class Meta:
         model = Post
-        fields = ("id", "content", "user", "image", "category", "location")
+        fields = (
+            "id",
+            "content",
+            "user",
+            "image",
+            "category",
+            "location",
+            "comments_count",
+            "likers_count",
+            "savers_count",
+        )
 
-
-class PostCreateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Post
-
-    def create(self, validated_data):
-        user = self.context["request"].user
-        return Post.objects.create(user, **validated_data)
-
-
-# class PostSerializer(serializers.ModelSerializer):
-#    comments_count = serializers.SerializerMethodField()
-#    likers_count = serializers.SerializerMethodField()
-#    savers_count = serializers.SerializerMethodField()
-
-#    class Meta:
-#        model = Post
-#        fields = '__all__'
-
-#    def get_comments_count(self, obj):
-# Calculate and return the comments count for the specific post object
-#        return obj.comments.count()
-#    def get_likers_count(self, obj):
-# Calculate and return the comments count for the specific post object
-#        return obj.likers.count()
-#    def get_savers_count(self, obj):
-# Calculate and return the comments count for the specific post object
-#        return obj.savers.count()
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -185,6 +188,28 @@ class CommentSerializer(serializers.ModelSerializer):
         allow_null=True,
         required=False,
     )
+    subcomments_count = serializers.SerializerMethodField()
+    likers_count = serializers.SerializerMethodField()
+    savers_count = serializers.SerializerMethodField()
+    is_liked = serializers.SerializerMethodField()
+    is_saved = serializers.SerializerMethodField() 
+
+    def get_comments_count(self, obj):
+        return obj.subcomments.count()
+
+    def get_likers_count(self, obj):
+        return obj.likers.count()
+
+    def get_savers_count(self, obj):
+        return obj.savers.count()
+    
+    def get_is_liked(self, obj):
+        user = self.context.get("request").user
+        return user.liked_posts.filter(pk=obj.pk).exists()
+
+    def get_is_saved(self, obj):
+        user = self.context.get("request").user
+        return user.saved_posts.filter(pk=obj.pk).exists()
 
     class Meta:
         model = Comment
@@ -200,9 +225,27 @@ class SubCommentSerializer(serializers.ModelSerializer):
         required=False,
     )
     subcomments_count = serializers.SerializerMethodField()
+    likers_count = serializers.SerializerMethodField()
+    savers_count = serializers.SerializerMethodField()
+    is_liked = serializers.SerializerMethodField()
+    is_saved = serializers.SerializerMethodField() 
 
-    def get_subcomments_count(self, obj):
+    def get_comments_count(self, obj):
         return obj.subcomments.count()
+
+    def get_likers_count(self, obj):
+        return obj.likers.count()
+
+    def get_savers_count(self, obj):
+        return obj.savers.count()
+    
+    def get_is_liked(self, obj):
+        user = self.context.get("request").user
+        return user.liked_posts.filter(pk=obj.pk).exists()
+
+    def get_is_saved(self, obj):
+        user = self.context.get("request").user
+        return user.saved_posts.filter(pk=obj.pk).exists()
 
     class Meta:
         model = Comment
@@ -228,22 +271,8 @@ class FollowerSerializer(serializers.ModelSerializer):
         return obj.followers.count()
 
 
-class LikeSerializer(serializers.ModelSerializer):
+
+class TokenSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Post
-        fields = "__all__"
-
-
-class SaveSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Post
-        fields = "__all__"
-
-
-# Serializer for sending a password reset email
-
-
-class CustomTokenSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CustomToken
+        model = Token
         fields = "__all__"

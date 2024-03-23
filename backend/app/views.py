@@ -22,7 +22,7 @@ from app.serializers import (
 )
 from django.core.exceptions import ValidationError
 
-from app.models import User, CustomToken, Follower, Post, Comment
+from app.models import User, Follower, Post, Comment
 from app.serializers import UserSerializer
 from app.tasks import send_activation_email, send_reset_password_email
 
@@ -69,7 +69,7 @@ class UserViewSet(
         )
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
-        # send_activation_email.apply_async(args=[user.id])
+        send_activation_email(user.id)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
         # return self.create(request)
 
@@ -107,7 +107,7 @@ class UserViewSet(
         serializer.is_valid(raise_exception=True)
         user = serializer.get_user()
         if user and not settings.TEST_MODE:
-            send_reset_password_email.apply_async(kwargs={"user_pk": user.pk})
+            send_reset_password_email(user.pk)
             # send_reset_password_email(user.pk)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -228,38 +228,60 @@ class FollowingViewset(ModelViewSet):
         return user.user_followed
 
 
-class LikeViewset(ModelViewSet):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
-    serializer_class = PostSerializer
-    pagination_class = None
+class PostLikeSaveViewSet(ModelViewSet):
     queryset = Post.objects.all()
-    filter_backends = [
-        DjangoFilterBackend,
-        filters.SearchFilter,
-        filters.OrderingFilter,
-    ]
-    filterset_fields = [
-        "id",
-    ]
-    search_fields = filterset_fields
+    serializer_class = PostSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_update(self, serializer):
+        post = self.get_object()
+        action = self.request.data.get("action")
+
+        if action == "like":
+            like = self.request.data.get("like", True)
+            if like:
+                post.like_post(self.request.user)
+            else:
+                post.unlike_post(self.request.user)
+        elif action == "save":
+            save = self.request.data.get("save", True)
+            if save:
+                post.save_post(self.request.user)
+            else:
+                post.unsave_post(self.request.user)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        post.save()
+        serializer.save()
 
 
-class SaveViewset(ModelViewSet):
-    authentication_classes = [JWTAuthentication]
+class CommentLikeSaveViewSet(ModelViewSet):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
     permission_classes = [IsAuthenticated]
-    serializer_class = PostSerializer
-    pagination_class = None
-    queryset = Post.objects.all()
-    filter_backends = [
-        DjangoFilterBackend,
-        filters.SearchFilter,
-        filters.OrderingFilter,
-    ]
-    filterset_fields = [
-        "id",
-    ]
-    search_fields = filterset_fields
+
+    def perform_update(self, serializer):
+        comment = self.get_object()
+        action = self.request.data.get("action")
+
+        if action == "like":
+            like = self.request.data.get("like", True)
+            if like:
+                comment.like_comment(self.request.user)
+            else:
+                comment.unlike_comment(self.request.user)
+        elif action == "save":
+            save = self.request.data.get("save", True)
+            if save:
+                comment.save_comment(self.request.user)
+            else:
+                comment.unsave_comment(self.request.user)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        comment.save()
+        serializer.save()
 
     # def get_queryset(self):
     #    return Post.objects.filter(user=self.request.user)

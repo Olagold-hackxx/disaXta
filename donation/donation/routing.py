@@ -15,16 +15,16 @@ from datetime import datetime
 from urllib.parse import parse_qs, urlparse
 
 import donation.wallet as Wallet
-from donation.donator import Donator
+from donation.donator import Donatee
 from donation.encoders import BalanceEncoder
 from donation.log import logger
-from donation.model import Item
+from donation.model import DisasterReport
 from donation.outputs import Error, Log
 from donation.util import hex_to_str
 from routes import Mapper
 
 
-class DefaultRoute():
+class DefaultRoute:
 
     def execute(self, match_result, request=None):
         return Error("Operation not implemented")
@@ -34,10 +34,8 @@ class AdvanceRoute(DefaultRoute):
 
     def _parse_request(self, request):
         self._msg_sender = request["metadata"]["msg_sender"]
-        self._msg_timestamp = datetime.fromtimestamp(
-            request["metadata"]["timestamp"])
-        request_payload = json.loads(
-            hex_to_str(request["payload"]))
+        self._msg_timestamp = datetime.fromtimestamp(request["metadata"]["timestamp"])
+        request_payload = json.loads(hex_to_str(request["payload"]))
         self._request_args = request_payload["args"]
 
     def execute(self, match_result, request=None):
@@ -55,6 +53,7 @@ class DepositERC20Route(WalletRoute):
 
     def execute(self, match_result, request=None):
         return self._wallet.erc20_deposit_process(request)
+
 
 class DepositERC721Route(WalletRoute):
 
@@ -74,22 +73,23 @@ class WithdrawErc20Route(WalletRoute):
 
     def execute(self, match_result, request=None):
         super().execute(match_result, request)
-        return self._wallet.erc20_withdraw(self._msg_sender,
-                                           self._request_args.get(
-                                               "erc20").lower(),
-                                           self._request_args.get("amount"))
+        return self._wallet.erc20_withdraw(
+            self._msg_sender,
+            self._request_args.get("erc20").lower(),
+            self._request_args.get("amount"),
+        )
 
 
 class TransferErc20Route(WalletRoute):
 
     def execute(self, match_result, request=None):
         super().execute(match_result, request)
-        return self._wallet.erc20_transfer(self._msg_sender,
-                                           self._request_args.get(
-                                               "to").lower(),
-                                           self._request_args.get(
-                                               "erc20").lower(),
-                                           self._request_args.get("amount"))
+        return self._wallet.erc20_transfer(
+            self._msg_sender,
+            self._request_args.get("to").lower(),
+            self._request_args.get("erc20").lower(),
+            self._request_args.get("amount"),
+        )
 
 
 class WithdrawErc721Route(WalletRoute):
@@ -103,70 +103,76 @@ class WithdrawErc721Route(WalletRoute):
         return self._rollup_address
 
     @rollup_address.setter
-    def rollup_address(self,value):
+    def rollup_address(self, value):
         self._rollup_address = value
 
     def execute(self, match_result, request=None):
         super().execute(match_result, request)
         if self._rollup_address is None:
-            return Error ("DApp Address is needed to end an Auction. Check Dapp documentation on how to proper set the DApp Address")
-        return self._wallet.erc721_withdraw(self._rollup_address,
-                                            self._msg_sender,
-                                            self._request_args.get(
-                                                "erc721").lower(),
-                                            self._request_args.get("token_id"))
+            return Error(
+                "DApp Address is needed to end an Donation. Check Dapp documentation on how to proper set the DApp Address"
+            )
+        return self._wallet.erc721_withdraw(
+            self._rollup_address,
+            self._msg_sender,
+            self._request_args.get("erc721").lower(),
+            self._request_args.get("token_id"),
+        )
 
 
 class TransferErc721Route(WalletRoute):
     def execute(self, match_result, request=None):
         super().execute(match_result, request)
-        return self._wallet.erc721_transfer(self._msg_sender,
-                                            self._request_args.get(
-                                                "to").lower(),
-                                            self._request_args.get(
-                                                "erc721").lower(),
-                                            self._request_args.get("token_id"))
+        return self._wallet.erc721_transfer(
+            self._msg_sender,
+            self._request_args.get("to").lower(),
+            self._request_args.get("erc721").lower(),
+            self._request_args.get("token_id"),
+        )
 
 
-class DonatorRoute(AdvanceRoute):
+class DonationRoute(AdvanceRoute):
 
-    def __init__(self, donator):
-        self._donator: Donator = donator
+    def __init__(self, donatee):
+        self._donatee: Donatee = donatee
 
-class CreateDonationRoute(DonatorRoute):
+
+class CreateDonationRoute(DonationRoute):
 
     def _parse_request(self, request):
         super()._parse_request(request)
         self._request_args["erc20"] = self._request_args["erc20"].lower()
         erc721 = self._request_args["item"]["erc721"].lower()
-        self._request_args["item"] = Item(
-            erc721, self._request_args["item"]["token_id"])
+        self._request_args["item"] = DisasterReport(
+            erc721, self._request_args["item"]["token_id"]
+        )
         self._request_args["start_date"] = datetime.fromtimestamp(
-            self._request_args["start_date"])
+            self._request_args["start_date"]
+        )
         self._request_args["end_date"] = datetime.fromtimestamp(
-            self._request_args["end_date"])
+            self._request_args["end_date"]
+        )
 
     def execute(self, match_result, request=None):
         super().execute(match_result, request)
-        return self._auctioneer.auction_create(self._msg_sender,
-                                               self._request_args.get("item"),
-                                               self._request_args.get("erc20"),
-                                               self._request_args.get("title"),
-                                               self._request_args.get(
-                                                   "description"),
-                                               self._request_args.get(
-                                                   "min_bid_amount"),
-                                               self._request_args.get(
-                                                   "start_date"),
-                                               self._request_args.get(
-                                                   "end_date"),
-                                               self._msg_timestamp)
+        return self._donatee.donaion_create(
+            self._msg_sender,
+            self._request_args.get("disaster_report"),
+            self._request_args.get("erc20"),
+            self._request_args.get("title"),
+            self._request_args.get("description"),
+            self._request_args.get("amount"),
+            self._request_args.get("start_date"),
+            self._request_args.get("end_date"),
+            self._msg_timestamp,
+        )
 
 
-class EndAuctionRoute(AuctioneerRoute):
+"""
+class EndDonationRoute(DonationRoute):
 
-    def __init__(self, auctioneer):
-        super().__init__(auctioneer)
+    def __init__(self, donator):
+        super().__init__(donator)
         self._rollup_address = None
 
     @property
@@ -174,75 +180,38 @@ class EndAuctionRoute(AuctioneerRoute):
         return self._rollup_address
 
     @rollup_address.setter
-    def rollup_address(self,value):
+    def rollup_address(self, value):
         self._rollup_address = value
 
     def execute(self, match_result, request=None):
         super().execute(match_result, request)
         if self._rollup_address is None:
-            return Error ("DApp Address is needed to end an Auction. Check Dapp documentation on how to proper set the DApp Address")
-        return self._auctioneer.auction_end(self._request_args.get("auction_id"),
-                                            self._rollup_address,
-                                            self._msg_timestamp,
-                                            self._msg_sender,
-                                            self._request_args.get("withdraw", False))
-
-
-class PlaceBidRoute(AuctioneerRoute):
-
-    def execute(self, match_result, request=None):
-        super().execute(match_result, request)
-        return self._auctioneer.auction_bid(self._msg_sender,
-                                            self._request_args.get(
-                                                "auction_id"),
-                                            self._request_args.get("amount"),
-                                            self._msg_timestamp)
+            return Error(
+                "DApp Address is needed to end an Donation. Check Dapp documentation on how to proper set the DApp Address"
+            )
+        return self._donatee.donation_end(
+            self._request_args.get("donation_id"),
+            self._rollup_address,
+            self._msg_timestamp,
+            self._msg_sender,
+            self._request_args.get("withdraw", False),
+        )
+"""
 
 
 class InspectRoute(DefaultRoute):
 
-    def __init__(self, auctioneer):
-        self._auctioneer: Auctioneer = auctioneer
+    def __init__(self, donatee):
+        self._donatee: Donatee = donatee
 
 
-class QueryAuctionRoute(InspectRoute):
+class Router:
 
-    def execute(self, match_result, request=None):
-        return self._auctioneer.auction_get(
-            int(match_result["auction_id"]))
-
-
-class ListAuctionsRoute(InspectRoute):
-
-    def _parse_request(self, request):
-        url = urlparse(hex_to_str(request["payload"]))
-        self._query = parse_qs(url.query)
-
-    def execute(self, match_result, request=None):
-        self._parse_request(request)
-        return self._auctioneer.auction_list(query=self._query)
-
-
-class ListBidsRoute(InspectRoute):
-
-    def execute(self, match_result, request=None):
-        return self._auctioneer.auction_list_bids(
-            int(match_result["auction_id"]))
-
-
-class Router():
-
-    def __init__(self, wallet, auctioneer):
+    def __init__(self, wallet, donator):
         self._controllers = {
-            "auction_bid": PlaceBidRoute(auctioneer),
-            "auction_create": CreateAuctionRoute(auctioneer),
-            "auction_end": EndAuctionRoute(auctioneer),
-            "auction_query": QueryAuctionRoute(auctioneer),
-            "auction_list": ListAuctionsRoute(auctioneer),
             "erc20_deposit": DepositERC20Route(wallet),
             "erc721_deposit": DepositERC721Route(wallet),
             "balance": BalanceRoute(wallet),
-            "bid_list": ListBidsRoute(auctioneer),
             "erc721_withdraw": WithdrawErc721Route(wallet),
             "erc721_transfer": TransferErc721Route(wallet),
             "erc20_withdraw": WithdrawErc20Route(wallet),
@@ -250,62 +219,32 @@ class Router():
         }
 
         self._route_map = Mapper()
-        self._route_map.connect(None,
-                                "bid",
-                                controller="auction_bid",
-                                action="execute")
-        self._route_map.connect(None,
-                                "create",
-                                controller="auction_create",
-                                action="execute")
-        self._route_map.connect(None,
-                                "auctions",
-                                controller="auction_list",
-                                action="execute")
-        self._route_map.connect(None,
-                                "auctions/{auction_id}",
-                                controller="auction_query",
-                                action="execute")
-        self._route_map.connect(None,
-                                "erc20_deposit",
-                                controller="erc20_deposit",
-                                action="execute")
-        self._route_map.connect(None,
-                                "erc721_deposit",
-                                controller="erc721_deposit",
-                                action="execute")
-        self._route_map.connect(None,
-                                "balance/{account}",
-                                controller="balance",
-                                action="execute")
-        self._route_map.connect(None,
-                                "auctions/{auction_id}/bids",
-                                controller="bid_list",
-                                action="execute")
-        self._route_map.connect(None,
-                                "erc721withdrawal",
-                                controller="erc721_withdraw",
-                                action="execute")
-        self._route_map.connect(None,
-                                "erc20withdrawal",
-                                controller="erc20_withdraw",
-                                action="execute")
-        self._route_map.connect(None,
-                                "end",
-                                controller="auction_end",
-                                action="execute")
-        self._route_map.connect(None,
-                                "erc721transfer",
-                                controller="erc721_transfer",
-                                action="execute")
-        self._route_map.connect(None,
-                                "erc20transfer",
-                                controller="erc20_transfer",
-                                action="execute")
+        self._route_map.connect(
+            None, "erc20_deposit", controller="erc20_deposit", action="execute"
+        )
+        self._route_map.connect(
+            None, "erc721_deposit", controller="erc721_deposit", action="execute"
+        )
+        self._route_map.connect(
+            None, "balance/{account}", controller="balance", action="execute"
+        )
+        self._route_map.connect(
+            None, "erc721withdrawal", controller="erc721_withdraw", action="execute"
+        )
+        self._route_map.connect(
+            None, "erc20withdrawal", controller="erc20_withdraw", action="execute"
+        )
+        self._route_map.connect(None, "end", controller="donation_end", action="execute")
+        self._route_map.connect(
+            None, "erc721transfer", controller="erc721_transfer", action="execute"
+        )
+        self._route_map.connect(
+            None, "erc20transfer", controller="erc20_transfer", action="execute"
+        )
 
-    def set_rollup_address(self,rollup_address):
-        self._controllers['erc721_withdraw'].rollup_address = rollup_address
-        self._controllers['auction_end'].rollup_address = rollup_address
+    def set_rollup_address(self, rollup_address):
+        self._controllers["erc721_withdraw"].rollup_address = rollup_address
+        self._controllers["donation_end"].rollup_address = rollup_address
 
     def process(self, route, request=None):
         route = route.lower()

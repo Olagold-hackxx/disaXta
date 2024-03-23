@@ -24,8 +24,8 @@ router.register("followers", views.FollowerViewset, basename="followers")
 router.register("following", views.FollowingViewset, basename="followings")
 router.register("comment", views.CommentViewset, basename="comments")
 router.register("subcomment", views.SubCommentViewset, basename="subcomments")
-router.register("like", views.LikeViewset, basename="likes")
-router.register("save", views.SaveViewset, basename="save")
+router.register("like", views.PostLikeSaveViewSet, basename="like_save_post")
+router.register("save", views.CommentLikeSaveViewSet, basename="like_save_comment")
 
 urlpatterns += router.urls
 

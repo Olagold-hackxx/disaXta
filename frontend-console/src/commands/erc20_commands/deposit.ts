@@ -71,7 +71,7 @@ export const handler = async (args: Args) => {
     );
 
     // connect to provider, use deployment address based on returned chain id of provider
-    const erc20Address = erc20 ?? deployment?.contracts["SimpleERC20"]?.address;
+    const erc20Address = erc20 ?? deployment?.contracts["ERC20Portal"]?.address;
     if (!erc20Address) {
         throw new Error(
             `cannot resolve ERC-20 address for chain ${network.chainId}`

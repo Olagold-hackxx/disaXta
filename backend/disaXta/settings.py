@@ -107,6 +107,24 @@ DATABASES = {
     }
 }
 
+# ------------- DJOSER ------------
+
+DJOSER = {
+    "SEND_ACTIVATION_EMAIL": True,
+    "ACTIVATION_URL": "activate/{uid}/{token}",
+    "PASSWORD_RESET_CONFIRM_URL": "password/reset/confirm/{uid}/{token}",
+    "USERNAME_RESET_CONFIRM_URL": "email/reset/confirm/{uid}/{token}",
+    "USER_CREATE_PASSWORD_RETYPE": True,
+    "CREATE_SESSION_ON_LOGIN": True,
+    "HIDE_USERS": True,
+    "SERIALIZERS": {
+        "user": "app.serializers.UserSerializer",
+        "current_user": "app.serializers.UserCompleteSerializer",
+        "password_reset": "app.serializers.PasswordResetSerializer",
+        "password_reset_confirm": "app.serializers.SetPasswordSerializer",
+    },
+    "PERMISSIONS": {},
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -145,8 +163,10 @@ SPECTACULAR_SETTINGS = {
 
 UNFOLD = {
     "SITE_TITLE": "DisaXta",
-    "SITE_HEADER": "DisaXta",
+    "SITE_HEADER": "DisaXta Portal",
 }
+
+TOKEN_EXPIRY_TIME = 60 * 60 * 12 
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/

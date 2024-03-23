@@ -14,15 +14,15 @@ import json
 from os import environ
 from urllib.parse import urlparse
 
-import auction.wallet as wallet
+import donation.wallet as wallet
 import requests
-from auction.auctioneer import Auctioneer
-from auction.log import logger
-from auction.outputs import Error, Log, Output
-from auction.routing import Router
-from auction.util import hex_to_str
+from donation.donator import Donatee
+from donation.log import logger
+from donation.outputs import Error, Log, Output
+from donation.routing import Router
+from donation.util import hex_to_str
 
-logger.info("Auction DApp started")
+logger.info("Donation DApp started")
 
 rollup_server = environ["ROLLUP_HTTP_SERVER_URL"]
 network = environ["NETWORK"]
@@ -123,8 +123,8 @@ handlers = {
 
 finish = {"status": "accept"}
 
-auctioneer = Auctioneer(wallet)
-router = Router(wallet, auctioneer)
+donator = Donatee(wallet)
+router = Router(wallet, donator)
 
 while True:
     logger.debug("Sending finish")
