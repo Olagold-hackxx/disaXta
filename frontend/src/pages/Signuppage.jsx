@@ -32,18 +32,15 @@ const Signuppage = () => {
                   Google
                 </div>
               </a>
-              <div className="flex flex-row gap-3 items-center rounded-3xl pr-9 justify-center bg-gradient-to-r from-fuchsia-500 to-purple-600 hover:bg-gradient-to-r hover:from-fuchsia-600 hover:to-purple-700 py-3 ">
+              <div className=" flex flex-row gap-5 items-center rounded-3xl pr-9 justify-center bg-gradient-to-r from-fuchsia-500 to-purple-600 hover:bg-gradient-to-r hover:from-fuchsia-600 hover:to-purple-700 py-3 ">
                 <a href={`${oauthUrl}/api/v1/auth/github`}>
-                  <img className="w-[35px]" src="../../2.png" alt="" />
+                  <img className="w-[38px]" src="../../github.png" alt="" />
                 </a>
                 <a href={`${oauthUrl}/api/v1/auth/facebook`}>
-                  <img className="w-[35px]" src="../../3.png" alt="" />
-                </a>
-                <a href={`${oauthUrl}/api/v1/auth/redhat-sso`}>
-                  <img className="w-[35px]" src="../../4.png" alt="" />
+                  <img className="w-[38px]" src="../../fb.jpg" alt="" />
                 </a>
                 <a href={`${oauthUrl}/api/v1/auth/linkedin`}>
-                  <img className="w-[35px]" src="../../5.png" alt="" />
+                  <img className="w-[38px]" src="../../link.png" alt="" />
                 </a>
               </div>
               <p>or</p>

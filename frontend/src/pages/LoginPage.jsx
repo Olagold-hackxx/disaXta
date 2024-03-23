@@ -20,18 +20,15 @@ const Loginpage = () => {
           <div className="flex flex-row mb-3 items-center md:text-xl text-base  font-semibold outline outline-1 bg-gradient-to-r from-fuchsia-500 to-purple-600 text-black p-4 rounded-full ">
             <FcGoogle className="mr-2 " size={32} /> Continue in with Google
           </div>
-          <div className="flex flex-row gap-3 items-center rounded-3xl pr-9 justify-center bg-gradient-to-r from-fuchsia-500 to-purple-600 py-3 ">
+          <div className="flex flex-row gap-3 items-center rounded-3xl pr-9 justify-center bg-gradient-to-r from-fuchsia-500 to-purple-600 py-3">
             <a href={`${oauthUrl}/api/v1/auth/github`} className="rounded-full">
-              <img className="w-[35px]" src="../../2.png" alt="" />
+              <img className="w-[35px]" src="../../github.png" alt="" />
             </a>
-            <a href={`${oauthUrl}/api/v1/auth/facebook`}>
-              <img className="w-[35px]" src="../../3.png" alt="" />
+            <a href={`${oauthUrl}/api/v1/auth/facebook`} className="rounded-full">
+              <img className="w-[35px]" src="../../fb.png" alt="" />
             </a>
-            <a href={`${oauthUrl}/api/v1/auth/redhat-sso`}>
-              <img className="w-[35px]" src="../../4.png" alt="" />
-            </a>
-            <a href={`${oauthUrl}/api/v1/auth/linkedin`}>
-              <img className="w-[35px]" src="../../5.png" alt="" />
+            <a href={`${oauthUrl}/api/v1/auth/linkedin`} className="rounded-full">
+              <img className="w-[35px]" src="../../link.png" alt="" />
             </a>
           </div>
           <p>or</p>

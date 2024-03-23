@@ -11,13 +11,13 @@ variable "DOCKER_ORGANIZATION" {
 }
 
 target "server" {
-  tags = ["${DOCKER_ORGANIZATION}/dapp:donation-${TAG}-server"]
+  tags = ["${DOCKER_ORGANIZATION}/dapp:ai-dapp-${TAG}-server"]
 }
 
 target "console" {
-  tags = ["${DOCKER_ORGANIZATION}/dapp:donation-${TAG}-console"]
+  tags = ["${DOCKER_ORGANIZATION}/dapp:ai-dapp-${TAG}-console"]
 }
 
 target "machine" {
-  tags = ["${DOCKER_ORGANIZATION}/dapp:donation-${TAG}-machine"]
+  tags = ["${DOCKER_ORGANIZATION}/dapp:ai-dapp-${TAG}-machine"]
 }

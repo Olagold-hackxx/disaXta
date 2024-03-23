@@ -4,10 +4,10 @@ services:
 
   web:
     build: .
-    command: tail -f /dev/null
+    command: npm run dev
     image: frontend
     volumes:
-      - .:/frontend
+      - .:/app
     env_file:
       - ./.env
     ports:

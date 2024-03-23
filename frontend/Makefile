@@ -12,7 +12,7 @@ stop:
 	docker-compose $(LOCAL_DOCKER_OPTIONS) stop
 
 server:
-	docker run $(LOCAL_WEB_CONTAINER_NAME) 
+	docker exec -it $(LOCAL_WEB_CONTAINER_NAME) npm run dev
 
 build:
 	docker-compose $(LOCAL_DOCKER_OPTIONS) build

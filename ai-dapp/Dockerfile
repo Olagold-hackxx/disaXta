@@ -24,4 +24,4 @@ COPY --from=build-stage /opt/venv /opt/venv
 
 WORKDIR /opt/cartesi/dapp
 COPY ./entrypoint.sh .
-COPY ./ai-dapp ./ai-dapp
+COPY ./models ./models
