@@ -12,7 +12,7 @@ export default function Createpost() {
 
   const backendUrl = import.meta.env.VITE_APP_BACKEND_URL;
   //const modelResponseUrl = import.meta.env.VITE_APP_MODEL_RESPONSE_URL;
-  const accessToken = Cookies.get("access_token");
+  const accessToken = Cookies.get("token");
   const [location, setLocation] = useState(null);
   //const username = Cookies.get("username");
 
@@ -65,12 +65,12 @@ export default function Createpost() {
     const posterFn = async () => {
       const headers = {
         "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Token ${accessToken}`,
         "X-CSRFToken": `${Cookies.get("csrftoken")}`,
       };
       data.image = data.image[0];
       await axios
-        .post(`${backendUrl}/api/v1/backend/posts/create`, data, {
+        .post(`${backendUrl}/api/post/`, data, {
           headers,
           withCredentials: true,
         })
@@ -104,7 +104,7 @@ export default function Createpost() {
       className=" p-3 md:p-6 bg-white rounded-md shadow-md flex flex-col"
     >
       <select
-        className="w-full p-2 mb-3 border rounded focus:border-green focus:outline-none"
+        className="w-full p-2 mb-3 border bg-gray-500 rounded focus:border-green focus:outline-none"
         {...register("category", { required: true })}
       >
         <option value="">Select Category</option>
@@ -116,7 +116,7 @@ export default function Createpost() {
       <textarea
         type="text"
         placeholder="Description"
-        className="w-full p-2 mb-3 border rounded focus:border-green focus:outline-none"
+        className="w-full p-2 mb-3 border text-black rounded focus:border-green focus:outline-none"
         {...register("content", { required: true })}
       />
       <input
@@ -125,7 +125,7 @@ export default function Createpost() {
         {...register("image", { required: false })}
       />
       <button
-        className="w-full p-2 bg-green text-white rounded cursor-pointer z-10"
+        className="w-full p-2 bg-green-500 text-white rounded cursor-pointer z-10"
         type="submit"
       >
         Submit
