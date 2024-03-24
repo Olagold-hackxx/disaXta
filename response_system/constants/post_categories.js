@@ -1,0 +1,1 @@
+module.exports = ["general question (not disaster related)", "disaster question", "report ongoing disaster", "report upcoming disaster"]
