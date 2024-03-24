@@ -6,15 +6,43 @@ import { PiBookmarkSimple } from "react-icons/pi";
 import { TbLineDashed } from "react-icons/tb";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
-
+import Cookies from "js-cookie";
+import axios from "axios";
 
 const Commentcomponent = () => {
-  
+  const backendUrl = import.meta.env.VITE_APP_BACKEND_URL;
+  const accessToken = Cookies.get("access_token");
+  const [comment, setComment] = useState([]);
+  const postId = useParams().postId;
+
+  useEffect(() => {
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+      "X-CSRFToken": `${Cookies.get("csrftoken")}`,
+    };
+    const fetchComments = async () => {
+      await axios
+        .get(`${backendUrl}/api/post/${postId}/`, {
+          headers: headers,
+          withCredentials: true,
+        })
+        .then((res) => {
+          console.log(res.data);
+          setComment(res.data.comments);
+          Cookies.set("access_token", res.data.access_token);
+          return res.data;
+        })
+        .catch((err) => console.log(err.message));
+    };
+    fetchComments();
+  }, [accessToken, backendUrl, postId]);
+
   return (
     <div className="py-3">
       {comment.map((comments, index) => (
         <div key={index} className="border-b border-gray-300 py-4">
-          <Accountcard userId={comments.user}/>
+          <Accountcard userId={comments.user} />
           <p className="text-left text-sm px-3 my-3 ">
             {comments.comment_content}
           </p>
@@ -53,6 +81,5 @@ const Commentcomponent = () => {
     </div>
   );
 };
-
 
 export default Commentcomponent;

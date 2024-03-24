@@ -50,9 +50,9 @@ const Communityselector = () => {
             ? "hover:bg-graydark p-4 bg-neutral-300 bg-gradient-to-r from-stone-500  to-stone-700 rounded-t-none  rounded-2xl "
             : "hover:bg-graydark p-4"
         }
-        to={"/waverx-tweet"}
+        to={"/disaX-tweet"}
       >
-        WaverX
+        DisaX
       </NavLink>
     </div>
   );

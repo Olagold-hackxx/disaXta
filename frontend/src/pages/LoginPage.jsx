@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { FcGoogle } from "react-icons/fc";
 import { Link } from "react-router-dom";
 import Login from "../components/Login";
@@ -7,7 +7,7 @@ import Login from "../components/Login";
 //const oauthUrl = import.meta.env.VITE_APP_OAUTH_URL;
 
 const Loginpage = () => {
-  const oauthUrl = null
+  const oauthUrl = import.meta.env.VITE_APP_OAUTH_URL
 
   return (
     <div className="text-white grid md:grid-cols-[3fr_4fr] grid-cols-[1fr] bg-gradient-to-r from-slate-900 to-slate-700 items-center ">
@@ -20,14 +20,14 @@ const Loginpage = () => {
           <div className="flex flex-row mb-3 items-center md:text-xl text-base  font-semibold outline outline-1 bg-gradient-to-r from-fuchsia-500 to-purple-600 text-black p-4 rounded-full ">
             <FcGoogle className="mr-2 " size={32} /> Continue in with Google
           </div>
-          <div className="flex flex-row gap-3 items-center rounded-3xl pr-9 justify-center bg-gradient-to-r from-fuchsia-500 to-purple-600 py-3">
+          <div className="flex flex-row gap-3 items-center rounded-3xl pr-9 justify-center bg-gradient-to-r from-fuchsia-500 to-purple-600 py-3 ">
             <a href={`${oauthUrl}/api/v1/auth/github`} className="rounded-full">
               <img className="w-[35px]" src="../../github.png" alt="" />
             </a>
-            <a href={`${oauthUrl}/api/v1/auth/facebook`} className="rounded-full">
+            <a href={`${oauthUrl}/api/v1/auth/facebook`}>
               <img className="w-[35px]" src="../../fb.png" alt="" />
             </a>
-            <a href={`${oauthUrl}/api/v1/auth/linkedin`} className="rounded-full">
+            <a href={`${oauthUrl}/api/v1/auth/linkedin`}>
               <img className="w-[35px]" src="../../link.png" alt="" />
             </a>
           </div>
