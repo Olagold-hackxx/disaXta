@@ -1,10 +1,53 @@
+import { toast } from "react-toastify";
+import { useForm } from "react-hook-form";
+import axios from "axios";
+import Cookies from "js-cookie";
 
 export default function Signupform() {
-  // const { register, handleSubmit, reset, formState } = useForm();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    //formState
+  } = useForm();
+
+  //const formError = formState.errors;
+
+  const backendUrl = import.meta.env.VITE_APP_BACKEND_URL;
+
+  const onSubmit = (data) => {
+    console.log(data);
+    // Send data to API if needed
+    const posterFn = async () => {
+      await axios
+        .post(`${backendUrl}/api/user/register/`, data)
+        .then((response) => {
+          Cookies.set("token", response.data.token);
+          Cookies.set("confirmationLink", response.data.confirmation_url);
+          Cookies.set("userId", response.data.id);
+        })
+        .catch((error) => console.log(error));
+    };
+    toast.promise(posterFn, {
+      pending: "Signing Up...",
+      success: "Succesful 👌 Please confirm your account in your email",
+      error: "An Error occured 🤯",
+    });
+    // Reset the form after submission
+    reset({
+      first_name: "",
+      last_name: "",
+      mobileNumber: "",
+      password: "",
+      username: "",
+      email: "",
+      bio: "",
+    });
+  };
 
   return (
     <form
-      // onSubmit={handleSubmit(onSubmit)}
+      onSubmit={handleSubmit(onSubmit)}
       className="max-w-md mx-auto text-black p-3 md:p-6 bg-white rounded-md shadow-md flex flex-col"
     >
       {/* Your input fields go here with register calls */}
@@ -12,34 +55,34 @@ export default function Signupform() {
         <input
           type="text"
           className="w-full p-2 mb-3 border rounded focus:border-green focus:outline-none"
-          placeholder="First name*"
-          // {...register("first_name", { required: true, maxLength: 80 })}
+          placeholder="First name"
+          {...register("first_name", { required: true, maxLength: 80 })}
         />
 
         <input
           type="text"
-          placeholder="Last name*"
+          placeholder="Last name"
           className="w-full p-2 mb-3 border rounded focus:border-green focus:outline-none"
-          // {...register("last_name", { required: true, maxLength: 100 })}
+          {...register("last_name", { required: true, maxLength: 100 })}
         />
       </div>
       <input
         type="text"
-        placeholder="Username*"
+        placeholder="Username"
         className="w-full p-2 mb-3 border rounded focus:border-green focus:outline-none"
-        // {...register("username", { required: true, maxLength: 100 })}
+        {...register("username", { required: true, maxLength: 100 })}
       />{" "}
       <input
         type="text"
         placeholder="Bio"
         className="w-full p-2 mb-3 border rounded focus:border-green focus:outline-none"
-        // {...register("bio", { required: false })}
+        {...register("bio", { required: false })}
       />
       <input
         type="password"
-        placeholder="Password*"
+        placeholder="Password"
         className="w-full p-2 mb-3 border rounded focus:border-green focus:outline-none"
-        // {...register("password", { required: true, maxLength: 20 })}
+        {...register("password", { required: true, maxLength: 20 })}
       />
       {/* {formError.password && formError.password.type === "maxLength" && (
         <span className="text-red-500 text-sm mb-4 ">
@@ -50,7 +93,7 @@ export default function Signupform() {
         type="text"
         placeholder="Email"
         className="w-full p-2 mb-3 border rounded focus:border-green focus:outline-none"
-        // {...register("email", { required: true, pattern: /^\S+@\S+$/i })}
+        {...register("email", { required: true, pattern: /^\S+@\S+$/i })}
       />
       {/* {formError.email && formError.email.type === "pattern" && (
         <span className="text-red-500 text-sm mb-4 ">
@@ -61,12 +104,12 @@ export default function Signupform() {
         type="tel"
         placeholder="Mobile number"
         className="w-full p-2 mb-3 border rounded focus:border-green focus:outline-none"
-        // {...register("mobileNumber", {
-        //   required: true,
-        //   minLength: 6,
-        //   maxLength: 12,
-        //   pattern: /^\d+$/,
-        // })}
+        {...register("mobileNumber", {
+          required: true,
+          minLength: 6,
+          maxLength: 12,
+          pattern: /^\d+$/,
+        })}
       />
       {/* {formError.mobileNumber &&
         formError.mobileNumber.type === "maxLength" && (
@@ -86,7 +129,7 @@ export default function Signupform() {
         </span>
       )} */}
       <button
-        className="w-full p-2 bg-green text-white rounded cursor-pointer z-10"
+        className="w-full p-2 bg-purple-500 text-white rounded cursor-pointer z-10"
         type="submit"
       >
         Submit
