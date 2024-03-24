@@ -10,7 +10,7 @@ const SharedLayout = () => {
   
   
   return (
-    <div className='bg-gradient-to-r from-slate-900 to-slate-700 text-white h-screen'>
+    <div className='bg-gradient-to-r from-slate-900 to-slate-700 text-white '>
       <div className=" block md:hidden ">
         <Topbar />
       </div>
