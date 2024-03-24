@@ -18,14 +18,14 @@ const Leftsidebar = ({ user }) => {
       <div className="flex flex-row items-center my-6 self-center ">
         {/* Img here */}
         <img
-          src={user.profile_pic ? user.profile_pic : "../../avatar.png"}
+          src={"../../avatar.png"}
           className="mr-2 rounded-full h-12"
           alt="Profile Pic"
         />
 
         <div>
-          <h3>{user.first_name}</h3>
-          <p>@{user.username}</p>
+          <h3>{"first_name"}</h3>
+          <p>@{"username"}</p>
         </div>
       </div>
     </div>
